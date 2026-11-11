@@ -1,4 +1,6 @@
 """Loading coordinate files and selecting chains with cellscape.Structure."""
+import sys
+
 import numpy as np
 import pytest
 
@@ -82,3 +84,10 @@ def test_multi_letter_chain_ids_match_renamed_pdb_chains(coord_files, reference)
     s = load(coord_files["multi"])
     for old, new in MULTI_LETTER_CHAINS.items():
         assert s.sequence[new] == reference.sequence[old]
+
+
+def test_view_without_nglview_explains_extra(monkeypatch):
+    # simulate nglview not being installed (it is an optional extra)
+    monkeypatch.setitem(sys.modules, "nglview", None)
+    with pytest.raises(ImportError, match=r"cellscape\[notebook\]"):
+        cellscape.Structure(str(IG_PDB), view=True)

@@ -183,7 +183,7 @@ class Structure:
             chain (str or list, optional): "all", a list of chain IDs e.g. ["A", "AA"], or a string of
                 single-letter IDs e.g. "ABC". Defaults to "all".
             uniprot (str, optional): UniProt identifier (to download the record) or the path to a UniProt XML file. Defaults to None.
-            view (bool, optional): Whether to use interactive NGLView widget. Defaults to True.
+            view (bool, optional): Whether to use interactive NGLView widget (needs the cellscape[notebook] extra). Defaults to True.
             is_opm (bool, optional): Structure is from Orientation of Proteins in Membranes database. Defaults to False.
             res_start (int, optional): Select subset of protein. Defaults to None.
             res_end (int, optional): Select subset of protein. Defaults to None.
@@ -229,8 +229,14 @@ class Structure:
         self.use_nglview = view
         self.view_matrix = []
         if self.use_nglview:
-            if 'nglview' not in sys.modules or 'nv' not in sys.modules:
+            try:
                 import nglview as nv
+            except ImportError as e:
+                raise ImportError(
+                    "Structure(view=True) shows an interactive NGLView widget, which needs the "
+                    "optional notebook dependencies. Install them with "
+                    "pip install 'cellscape[notebook]', or pass view=False."
+                ) from e
             self._structure_to_view = self.structure
             initial_repr = [
                 {"type": "spacefill", "params": {
