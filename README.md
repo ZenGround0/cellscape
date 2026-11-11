@@ -14,6 +14,12 @@ cd cellscape
 pip install -e .
 ```
 
+The Jupyter notebook interface also needs the optional notebook dependencies ([NGLView](https://github.com/nglviewer/nglview)), which are installed with:
+
+```
+pip install -e ".[notebook]"
+```
+
 ## Making a cartoon from a PDB structure
 
 ### Jupyter notebook interface
